@@ -963,6 +963,9 @@ def vis_image(imgs, pred_masks, gt_masks, save_path, reverse = False, points = N
     if reverse == True:
         pred_masks = 1 - pred_masks
         gt_masks = 1 - gt_masks
+    else:
+        pred_masks = pred_masks.clone()
+        gt_masks = gt_masks.clone()
     if c == 2: # for REFUGE multi mask output
         pred_disc, pred_cup = pred_masks[:,0,:,:].unsqueeze(1).expand(b,3,h,w), pred_masks[:,1,:,:].unsqueeze(1).expand(b,3,h,w)
         gt_disc, gt_cup = gt_masks[:,0,:,:].unsqueeze(1).expand(b,3,h,w), gt_masks[:,1,:,:].unsqueeze(1).expand(b,3,h,w)
