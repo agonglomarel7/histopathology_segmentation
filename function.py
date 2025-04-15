@@ -145,6 +145,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                 for n, value in net.image_encoder.named_parameters(): 
                     value.requires_grad = True
                     
+            imgs = net.preprocess(imgs)        
             imge= net.image_encoder(imgs)
             with torch.no_grad():
                 if args.net == 'sam' or args.net == 'mobile_sam':
@@ -191,7 +192,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                 )
                 
             # Resize to the ordered output size
-            pred = F.interpolate(pred,size=(args.out_size,args.out_size))
+            pred = F.interpolate(pred,size=(args.out_size,args.out_size), mode="bilinear", align_corners=False)
 
             loss = lossfunc(pred, masks)
 
@@ -303,6 +304,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                 
                 '''test'''
                 with torch.no_grad():
+                    imgs = net.preprocess(imgs)
                     imge= net.image_encoder(imgs)
                     if args.net == 'sam' or args.net == 'mobile_sam':
                         se, de = net.prompt_encoder(
@@ -348,7 +350,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                         )
 
                     # Resize to the ordered output size
-                    pred = F.interpolate(pred,size=(args.out_size,args.out_size))
+                    pred = F.interpolate(pred,size=(args.out_size,args.out_size), mode="bilinear", align_corners=False)
                     tot += lossfunc(pred, masks)
 
                     '''vis images'''

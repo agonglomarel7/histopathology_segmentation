@@ -24,6 +24,7 @@ def get_dataloader(args):
     transform_train = transforms.Compose([
         transforms.Resize((args.image_size,args.image_size)),
         transforms.ToTensor(),
+        transforms.Lambda(lambda x: x * 255)
     ])
 
     transform_train_seg = transforms.Compose([
@@ -34,6 +35,7 @@ def get_dataloader(args):
     transform_test = transforms.Compose([
         transforms.Resize((args.image_size, args.image_size)),
         transforms.ToTensor(),
+        transforms.Lambda(lambda x: x * 255)
     ])
 
     transform_test_seg = transforms.Compose([
