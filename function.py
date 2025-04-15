@@ -45,7 +45,6 @@ args = cfg.parse_args()
 GPUdevice = torch.device('cuda', args.gpu_device)
 pos_weight = torch.ones([1]).cuda(device=GPUdevice)*2
 criterion_G = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
-seed = torch.randint(1,11,(args.b,7))
 
 torch.backends.cudnn.benchmark = True
 loss_function = DiceCELoss(to_onehot_y=True, softmax=True)

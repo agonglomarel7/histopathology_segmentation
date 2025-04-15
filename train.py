@@ -39,6 +39,9 @@ def main():
 
     args = cfg.parse_args()
 
+    seed = args.seed
+    set_seed(seed)
+
     GPUdevice = torch.device('cuda', args.gpu_device)
 
     net = get_network(args, args.net, use_gpu=args.gpu, gpu_device=GPUdevice, distribution = args.distributed)
