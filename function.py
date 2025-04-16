@@ -219,7 +219,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
 
             pbar.update()
 
-    return loss
+    return epoch_loss / len(train_loader)
 
 def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
      # eval mode
