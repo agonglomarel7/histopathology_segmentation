@@ -114,7 +114,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                 coords_torch = torch.as_tensor(point_coords, dtype=torch.float, device=GPUdevice)
                 labels_torch = torch.as_tensor(point_labels, dtype=torch.int, device=GPUdevice)
                 if(len(point_labels.shape)==1): # only one point prompt
-                    coords_torch, labels_torch, showp = coords_torch[None, :, :], labels_torch[None, :], showp[None, :, :]
+                    coords_torch, labels_torch, showp = coords_torch.unsqueeze(1), labels_torch.unsqueeze(1), showp[None, :, :]
                 pt = (coords_torch, labels_torch)
 
             '''init'''
@@ -292,7 +292,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                     coords_torch = torch.as_tensor(point_coords, dtype=torch.float, device=GPUdevice)
                     labels_torch = torch.as_tensor(point_labels, dtype=torch.int, device=GPUdevice)
                     if(len(point_labels.shape)==1): # only one point prompt
-                        coords_torch, labels_torch, showp = coords_torch[None, :, :], labels_torch[None, :], showp[None, :, :]
+                        coords_torch, labels_torch, showp = coords_torch.unsqueeze(1), labels_torch.unsqueeze(1), showp[None, :, :]
                     pt = (coords_torch, labels_torch)
 
                 '''init'''
