@@ -1035,6 +1035,7 @@ def eval_seg(pred,true_mask_p,threshold):
     pred: [b,2,h,w]
     '''
     b, c, h, w = pred.size()
+    pred = F.sigmoid(pred)
     if c == 2:
         iou_d, iou_c, disc_dice, cup_dice = 0,0,0,0
         for th in threshold:
