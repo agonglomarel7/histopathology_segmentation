@@ -227,6 +227,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
 
     mask_type = torch.float32
     n_val = len(val_loader)  # the number of batch
+    dataset_size = len(val_loader.dataset)
     ave_res, mix_res = (0,0,0,0), (0,)*args.multimask_output*2
     rater_res = [(0,0,0,0) for _ in range(6)]
     tot = 0
@@ -244,6 +245,8 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
         for ind, pack in enumerate(val_loader):
             imgsw = pack['image'].to(dtype = torch.float32, device = GPUdevice)
             masksw = pack['label'].to(dtype = torch.float32, device = GPUdevice)
+
+            cur_bsz = imgsw.shape[0]
             # for k,v in pack['image_meta_dict'].items():
             #     print(k)
             if 'pt' not in pack or args.thd:
@@ -350,7 +353,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
 
                     # Resize to the ordered output size
                     pred = F.interpolate(pred,size=(args.out_size,args.out_size), mode="bilinear", align_corners=False)
-                    tot += lossfunc(pred, masks)
+                    tot += lossfunc(pred, masks) * cur_bsz
 
                     '''vis images'''
                     if ind % args.vis == 0:
@@ -364,6 +367,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                     
 
                     temp = eval_seg(pred, masks, threshold)
+                    temp = tuple([number * cur_bsz for number in temp])
                     mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
 
             pbar.update()
@@ -371,7 +375,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
     if args.evl_chunk:
         n_val = n_val * (imgsw.size(-1) // evl_ch)
 
-    return tot/ n_val , tuple([a/n_val for a in mix_res])
+    return tot/dataset_size, tuple([a / dataset_size for a in mix_res])
 
 def transform_prompt(coord,label,h,w):
     coord = coord.transpose(0,1)
