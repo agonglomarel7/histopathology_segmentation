@@ -1007,10 +1007,10 @@ def vis_image(imgs, pred_masks, gt_masks, save_path, reverse = False, points = N
                 else:
                     ps = np.round(points.cpu()/args.image_size * args.out_size).to(dtype = torch.int)
                 # gt_masks[i,:,points[i,0]-5:points[i,0]+5,points[i,1]-5:points[i,1]+5] = torch.Tensor([255, 0, 0]).to(dtype = torch.float32, device = torch.device('cuda:' + str(dev)))
-                for p in ps:
-                    gt_masks[i,0,p[i,0]-5:p[i,0]+5,p[i,1]-5:p[i,1]+5] = 0.5
-                    gt_masks[i,1,p[i,0]-5:p[i,0]+5,p[i,1]-5:p[i,1]+5] = 0.1
-                    gt_masks[i,2,p[i,0]-5:p[i,0]+5,p[i,1]-5:p[i,1]+5] = 0.4
+                for p in ps[i]:
+                    gt_masks[i,0,p[0]-5:p[0]+5,p[1]-5:p[1]+5] = 0.5
+                    gt_masks[i,1,p[0]-5:p[0]+5,p[1]-5:p[1]+5] = 0.1
+                    gt_masks[i,2,p[0]-5:p[0]+5,p[1]-5:p[1]+5] = 0.4
         if boxes is not None:
             for i in range(b):
                 # the next line causes: ValueError: Tensor uint8 expected, got torch.float32
