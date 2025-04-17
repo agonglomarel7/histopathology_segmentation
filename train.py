@@ -99,7 +99,7 @@ def main():
 
     for epoch in range(settings.EPOCH):
 
-        if epoch and epoch < 5:
+        if epoch < 5:
             if args.dataset != 'REFUGE':
                 tol, (eiou, edice) = function.validation_sam(args, nice_test_loader, epoch, net, writer)
                 logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {epoch}.')
