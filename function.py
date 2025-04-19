@@ -144,6 +144,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                 for n, value in net.image_encoder.named_parameters(): 
                     value.requires_grad = True
                     
+            origin_imgs = imgs.clone()        
             imgs = net.preprocess(imgs)        
             imge= net.image_encoder(imgs)
             with torch.no_grad():
@@ -215,7 +216,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                     namecat = 'Train'
                     for na in name[:2]:
                         namecat = namecat + na.split('/')[-1].split('.')[0] + '+'
-                    vis_image(imgs,pred,masks, os.path.join(args.path_helper['sample_path'], namecat+'epoch+' +str(epoch) + '.jpg'), reverse=False, points=showp)
+                    vis_image(origin_imgs/255,pred,masks, os.path.join(args.path_helper['sample_path'], namecat+'epoch+' +str(epoch) + '.jpg'), reverse=False, points=showp)
 
             pbar.update()
 
@@ -306,6 +307,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                 
                 '''test'''
                 with torch.no_grad():
+                    origin_imgs = imgs.clone()
                     imgs = net.preprocess(imgs)
                     imge= net.image_encoder(imgs)
                     if args.net == 'sam' or args.net == 'mobile_sam':
@@ -363,7 +365,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                         ]:
                             img_name = na.split('/')[-1].split('.')[0]
                             namecat = namecat + img_name + '+'
-                        vis_image(imgs,pred, masks, os.path.join(args.path_helper['sample_path'], namecat+'epoch+' +str(epoch) + '.jpg'), reverse=False, points=showp)
+                        vis_image(origin_imgs/255,pred, masks, os.path.join(args.path_helper['sample_path'], namecat+'epoch+' +str(epoch) + '.jpg'), reverse=False, points=showp)
                     
 
                     temp = eval_seg(pred, masks, threshold)
