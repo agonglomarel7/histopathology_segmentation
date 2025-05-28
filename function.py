@@ -45,7 +45,6 @@ args = cfg.parse_args()
 GPUdevice = torch.device('cuda', args.gpu_device)
 pos_weight = torch.ones([1]).cuda(device=GPUdevice)*2
 criterion_G = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
-seed = torch.randint(1,11,(args.b,7))
 
 torch.backends.cudnn.benchmark = True
 loss_function = DiceCELoss(to_onehot_y=True, softmax=True)
@@ -102,7 +101,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
 
                 imgs = torchvision.transforms.Resize((args.image_size,args.image_size))(imgs)
                 masks = torchvision.transforms.Resize((args.out_size,args.out_size))(masks)
-            showp = pt
+            showp = pt[..., [1, 0]]
 
             mask_type = torch.float32
             ind += 1
@@ -115,7 +114,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                 coords_torch = torch.as_tensor(point_coords, dtype=torch.float, device=GPUdevice)
                 labels_torch = torch.as_tensor(point_labels, dtype=torch.int, device=GPUdevice)
                 if(len(point_labels.shape)==1): # only one point prompt
-                    coords_torch, labels_torch, showp = coords_torch[None, :, :], labels_torch[None, :], showp[None, :, :]
+                    coords_torch, labels_torch, showp = coords_torch.unsqueeze(1), labels_torch.unsqueeze(1), showp.unsqueeze(1)
                 pt = (coords_torch, labels_torch)
 
             '''init'''
@@ -145,6 +144,8 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                 for n, value in net.image_encoder.named_parameters(): 
                     value.requires_grad = True
                     
+            origin_imgs = imgs.clone()        
+            imgs = net.preprocess(imgs)        
             imge= net.image_encoder(imgs)
             with torch.no_grad():
                 if args.net == 'sam' or args.net == 'mobile_sam':
@@ -191,7 +192,7 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                 )
                 
             # Resize to the ordered output size
-            pred = F.interpolate(pred,size=(args.out_size,args.out_size))
+            pred = F.interpolate(pred,size=(args.out_size,args.out_size), mode="bilinear", align_corners=False)
 
             loss = lossfunc(pred, masks)
 
@@ -215,11 +216,11 @@ def train_sam(args, net: nn.Module, optimizer, train_loader,
                     namecat = 'Train'
                     for na in name[:2]:
                         namecat = namecat + na.split('/')[-1].split('.')[0] + '+'
-                    vis_image(imgs,pred,masks, os.path.join(args.path_helper['sample_path'], namecat+'epoch+' +str(epoch) + '.jpg'), reverse=False, points=showp)
+                    vis_image(origin_imgs/255,pred,masks, os.path.join(args.path_helper['sample_path'], namecat+'epoch+' +str(epoch) + '.jpg'), reverse=False, points=showp)
 
             pbar.update()
 
-    return loss
+    return epoch_loss / len(train_loader)
 
 def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
      # eval mode
@@ -227,6 +228,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
 
     mask_type = torch.float32
     n_val = len(val_loader)  # the number of batch
+    dataset_size = len(val_loader.dataset)
     ave_res, mix_res = (0,0,0,0), (0,)*args.multimask_output*2
     rater_res = [(0,0,0,0) for _ in range(6)]
     tot = 0
@@ -244,6 +246,8 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
         for ind, pack in enumerate(val_loader):
             imgsw = pack['image'].to(dtype = torch.float32, device = GPUdevice)
             masksw = pack['label'].to(dtype = torch.float32, device = GPUdevice)
+
+            cur_bsz = imgsw.shape[0]
             # for k,v in pack['image_meta_dict'].items():
             #     print(k)
             if 'pt' not in pack or args.thd:
@@ -279,7 +283,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                     imgs = torchvision.transforms.Resize((args.image_size,args.image_size))(imgs)
                     masks = torchvision.transforms.Resize((args.out_size,args.out_size))(masks)
                 
-                showp = pt
+                showp = pt[..., [1, 0]]
 
                 mask_type = torch.float32
                 ind += 1
@@ -292,7 +296,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                     coords_torch = torch.as_tensor(point_coords, dtype=torch.float, device=GPUdevice)
                     labels_torch = torch.as_tensor(point_labels, dtype=torch.int, device=GPUdevice)
                     if(len(point_labels.shape)==1): # only one point prompt
-                        coords_torch, labels_torch, showp = coords_torch[None, :, :], labels_torch[None, :], showp[None, :, :]
+                        coords_torch, labels_torch, showp = coords_torch.unsqueeze(1), labels_torch.unsqueeze(1), showp.unsqueeze(1)
                     pt = (coords_torch, labels_torch)
 
                 '''init'''
@@ -303,6 +307,8 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                 
                 '''test'''
                 with torch.no_grad():
+                    origin_imgs = imgs.clone()
+                    imgs = net.preprocess(imgs)
                     imge= net.image_encoder(imgs)
                     if args.net == 'sam' or args.net == 'mobile_sam':
                         se, de = net.prompt_encoder(
@@ -348,8 +354,8 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                         )
 
                     # Resize to the ordered output size
-                    pred = F.interpolate(pred,size=(args.out_size,args.out_size))
-                    tot += lossfunc(pred, masks)
+                    pred = F.interpolate(pred,size=(args.out_size,args.out_size), mode="bilinear", align_corners=False)
+                    tot += lossfunc(pred, masks) * cur_bsz
 
                     '''vis images'''
                     if ind % args.vis == 0:
@@ -359,10 +365,11 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                         ]:
                             img_name = na.split('/')[-1].split('.')[0]
                             namecat = namecat + img_name + '+'
-                        vis_image(imgs,pred, masks, os.path.join(args.path_helper['sample_path'], namecat+'epoch+' +str(epoch) + '.jpg'), reverse=False, points=showp)
+                        vis_image(origin_imgs/255,pred, masks, os.path.join(args.path_helper['sample_path'], namecat+'epoch+' +str(epoch) + '.jpg'), reverse=False, points=showp)
                     
 
                     temp = eval_seg(pred, masks, threshold)
+                    temp = tuple([number * cur_bsz for number in temp])
                     mix_res = tuple([sum(a) for a in zip(mix_res, temp)])
 
             pbar.update()
@@ -370,7 +377,7 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
     if args.evl_chunk:
         n_val = n_val * (imgsw.size(-1) // evl_ch)
 
-    return tot/ n_val , tuple([a/n_val for a in mix_res])
+    return tot/dataset_size, tuple([a / dataset_size for a in mix_res])
 
 def transform_prompt(coord,label,h,w):
     coord = coord.transpose(0,1)

@@ -76,6 +76,17 @@ device = torch.device('cuda', args.gpu_device)
 # optimizerD = optim.Adam(netD.parameters(), lr=dis_lr, betas=(beta1, 0.999))
 '''end'''
 
+def set_seed(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    
 def get_network(args, net, use_gpu=True, gpu_device = 0, distribution = True):
     """ return given network
     """
@@ -963,6 +974,9 @@ def vis_image(imgs, pred_masks, gt_masks, save_path, reverse = False, points = N
     if reverse == True:
         pred_masks = 1 - pred_masks
         gt_masks = 1 - gt_masks
+    else:
+        pred_masks = pred_masks.clone()
+        gt_masks = gt_masks.clone()
     if c == 2: # for REFUGE multi mask output
         pred_disc, pred_cup = pred_masks[:,0,:,:].unsqueeze(1).expand(b,3,h,w), pred_masks[:,1,:,:].unsqueeze(1).expand(b,3,h,w)
         gt_disc, gt_cup = gt_masks[:,0,:,:].unsqueeze(1).expand(b,3,h,w), gt_masks[:,1,:,:].unsqueeze(1).expand(b,3,h,w)
@@ -993,10 +1007,10 @@ def vis_image(imgs, pred_masks, gt_masks, save_path, reverse = False, points = N
                 else:
                     ps = np.round(points.cpu()/args.image_size * args.out_size).to(dtype = torch.int)
                 # gt_masks[i,:,points[i,0]-5:points[i,0]+5,points[i,1]-5:points[i,1]+5] = torch.Tensor([255, 0, 0]).to(dtype = torch.float32, device = torch.device('cuda:' + str(dev)))
-                for p in ps:
-                    gt_masks[i,0,p[i,0]-5:p[i,0]+5,p[i,1]-5:p[i,1]+5] = 0.5
-                    gt_masks[i,1,p[i,0]-5:p[i,0]+5,p[i,1]-5:p[i,1]+5] = 0.1
-                    gt_masks[i,2,p[i,0]-5:p[i,0]+5,p[i,1]-5:p[i,1]+5] = 0.4
+                for p in ps[i]:
+                    gt_masks[i,0,p[0]-5:p[0]+5,p[1]-5:p[1]+5] = 0.5
+                    gt_masks[i,1,p[0]-5:p[0]+5,p[1]-5:p[1]+5] = 0.1
+                    gt_masks[i,2,p[0]-5:p[0]+5,p[1]-5:p[1]+5] = 0.4
         if boxes is not None:
             for i in range(b):
                 # the next line causes: ValueError: Tensor uint8 expected, got torch.float32
@@ -1021,6 +1035,7 @@ def eval_seg(pred,true_mask_p,threshold):
     pred: [b,2,h,w]
     '''
     b, c, h, w = pred.size()
+    pred = F.sigmoid(pred)
     if c == 2:
         iou_d, iou_c, disc_dice, cup_dice = 0,0,0,0
         for th in threshold:
@@ -1160,6 +1175,7 @@ def random_click(mask, point_labels = 1):
         point_labels = max_label
     # max agreement position
     indices = np.argwhere(mask == max_label) 
+    indices = indices[:, ::-1].copy()
     return point_labels, indices[np.random.randint(len(indices))]
 
 

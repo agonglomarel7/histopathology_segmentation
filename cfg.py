@@ -3,6 +3,7 @@ import argparse
 
 def parse_args():    
     parser = argparse.ArgumentParser()
+    parser.add_argument('-seed', type=int, default=24, help='random seed')
     parser.add_argument('-net', type=str, default='sam', help='net type')
     parser.add_argument('-baseline', type=str, default='unet', help='baseline net type')
     parser.add_argument('-encoder', type=str, default='default', help='encoder type')
