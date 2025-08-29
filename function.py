@@ -358,7 +358,8 @@ def validation_sam(args, val_loader, epoch, net: nn.Module, clean_dir=True):
                     tot += lossfunc(pred, masks) * cur_bsz
 
                     '''vis images'''
-                    if ind % args.vis == 0:
+                    if args.vis is not None and ind % args.vis == 0:
+
                         namecat = 'Test'
                         for na in name[:2
                         

@@ -15,8 +15,8 @@ from einops import rearrange
 from ...common import LayerNorm2d
 from ...ImageEncoder import AdapterBlock, Block, LoraBlock
 
-
-# This class and its supporting functions below lightly adapted from the ViTDet backbone available at: https://github.com/facebookresearch/detectron2/blob/main/detectron2/modeling/backbone/vit.py # noqa
+# This class and its supporting functions below lightly adapted from the ViTDet backbone available at:
+# https://github.com/facebookresearch/detectron2/blob/main/detectron2/modeling/backbone/vit.py
 class ImageEncoderViT(nn.Module):
     def __init__(
         self,
@@ -38,25 +38,6 @@ class ImageEncoderViT(nn.Module):
         window_size: int = 0,
         global_attn_indexes: Tuple[int, ...] = (),
     ) -> None:
-        """
-        Args:
-            img_size (int): Input image size.
-            patch_size (int): Patch size.
-            in_chans (int): Number of input image channels.
-            embed_dim (int): Patch embedding dimension.
-            depth (int): Depth of
-             ViT.
-            num_heads (int): Number of attention heads in each ViT block.
-            mlp_ratio (float): Ratio of mlp hidden dim to embedding dim.
-            qkv_bias (bool): If True, add a learnable bias to query, key, value.
-            norm_layer (nn.Module): Normalization layer.
-            act_layer (nn.Module): Activation layer.
-            use_abs_pos (bool): If True, use absolute positional embeddings.
-            use_rel_pos (bool): If True, add relative positional embeddings to the attention map.
-            rel_pos_zero_init (bool): If True, zero initialize relative positional parameters.
-            window_size (int): Window size for window attention blocks.
-            global_attn_indexes (list): Indexes for blocks using global attention.
-        """
         super().__init__()
         self.img_size = img_size
         self.args = args
@@ -70,18 +51,17 @@ class ImageEncoderViT(nn.Module):
 
         self.pos_embed: Optional[nn.Parameter] = None
         if use_abs_pos:
-            # Initialize absolute positional embedding with pretrain image size.
             self.pos_embed = nn.Parameter(
                 torch.zeros(1, 1024 // patch_size, 1024 // patch_size, embed_dim)
             )
 
         self.blocks = nn.ModuleList()
         if args.mod == 'sam_adpt':
-            block_class = AdapterBlock 
+            block_class = AdapterBlock
         elif args.mod == 'sam_lora':
-            block_class = LoraBlock 
+            block_class = LoraBlock
         else:
-            block_class = Block 
+            block_class = Block
 
         for i in range(depth):
             block = block_class(
@@ -100,28 +80,16 @@ class ImageEncoderViT(nn.Module):
             self.blocks.append(block)
 
         self.neck = nn.Sequential(
-            nn.Conv2d(
-                embed_dim,
-                out_chans,
-                kernel_size=1,
-                bias=False,
-            ),
+            nn.Conv2d(embed_dim, out_chans, kernel_size=1, bias=False),
             LayerNorm2d(out_chans),
-            nn.Conv2d(
-                out_chans,
-                out_chans,
-                kernel_size=3,
-                padding=1,
-                bias=False,
-            ),
+            nn.Conv2d(out_chans, out_chans, kernel_size=3, padding=1, bias=False),
             LayerNorm2d(out_chans),
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-
+        print("Shape before self.patch_embed:", x.shape, x.device, x.dtype)
         x = self.patch_embed(x)
         if self.pos_embed is not None:
-            # resize position embedding to match the input
             new_abs_pos = F.interpolate(
                 self.pos_embed.permute(0, 3, 1, 2),
                 size=(x.shape[1], x.shape[2]),
@@ -132,16 +100,12 @@ class ImageEncoderViT(nn.Module):
 
         for blk in self.blocks:
             x = blk(x)
-            
+
         x = self.neck(x.permute(0, 3, 1, 2))
 
         return x
 
 class PatchEmbed(nn.Module):
-    """
-    Image to Patch Embedding.
-    """
-
     def __init__(
         self,
         kernel_size: Tuple[int, int] = (16, 16),
@@ -150,23 +114,14 @@ class PatchEmbed(nn.Module):
         in_chans: int = 3,
         embed_dim: int = 768,
     ) -> None:
-        """
-        Args:
-            kernel_size (Tuple): kernel size of the projection layer.
-            stride (Tuple): stride of the projection layer.
-            padding (Tuple): padding size of the projection layer.
-            in_chans (int): Number of input image channels.
-            embed_dim (int): Patch embedding dimension.
-        """
         super().__init__()
-
         self.proj = nn.Conv2d(
             in_chans, embed_dim, kernel_size=kernel_size, stride=stride, padding=padding
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        print("Shape before self.proj:", x.shape, x.device, x.dtype)
         x = self.proj(x)
-        # B C H W -> B H W C
         x = x.permute(0, 2, 3, 1)
         return x
 

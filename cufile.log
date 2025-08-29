@@ -1,0 +1,78 @@
+ 16-07-2025 16:05:59:208 [pid=6992 tid=6992] ERROR  cufio-mnt:156 unable to load, symbol  mnt_unref_table 
+
+ 16-07-2025 16:05:59:213 [pid=6992 tid=6992] NOTICE  cufio-drv:636 running in compatible mode
+ 16-07-2025 16:05:59:215 [pid=6992 tid=6992] ERROR  cufio-plat:734 Platform does not have any supported GPU!
+ 16-07-2025 16:05:59:216 [pid=6992 tid=6992] ERROR  cufio:465 platform is not supported by cufile
+ 16-07-2025 16:05:59:218 [pid=6992 tid=6992] ERROR  cufio:538 cuFile initialization failed
+ 16-07-2025 16:09:23:778 [pid=8439 tid=8439] ERROR  cufio-mnt:156 unable to load, symbol  mnt_unref_table 
+
+ 16-07-2025 16:09:23:781 [pid=8439 tid=8439] NOTICE  cufio-drv:636 running in compatible mode
+ 16-07-2025 16:09:23:782 [pid=8439 tid=8439] ERROR  cufio-plat:734 Platform does not have any supported GPU!
+ 16-07-2025 16:09:23:783 [pid=8439 tid=8439] ERROR  cufio:465 platform is not supported by cufile
+ 16-07-2025 16:09:23:784 [pid=8439 tid=8439] ERROR  cufio:538 cuFile initialization failed
+ 16-07-2025 16:15:46:222 [pid=10180 tid=10180] ERROR  cufio-mnt:156 unable to load, symbol  mnt_unref_table 
+
+ 16-07-2025 16:15:46:239 [pid=10180 tid=10180] NOTICE  cufio-drv:636 running in compatible mode
+ 16-07-2025 16:15:46:240 [pid=10180 tid=10180] ERROR  cufio-plat:734 Platform does not have any supported GPU!
+ 16-07-2025 16:15:46:242 [pid=10180 tid=10180] ERROR  cufio:465 platform is not supported by cufile
+ 16-07-2025 16:15:46:243 [pid=10180 tid=10180] ERROR  cufio:538 cuFile initialization failed
+ 16-07-2025 16:25:34:767 [pid=13591 tid=13591] ERROR  cufio-mnt:156 unable to load, symbol  mnt_unref_table 
+
+ 16-07-2025 16:25:34:783 [pid=13591 tid=13591] NOTICE  cufio-drv:636 running in compatible mode
+ 16-07-2025 16:25:34:784 [pid=13591 tid=13591] ERROR  cufio-plat:734 Platform does not have any supported GPU!
+ 16-07-2025 16:25:34:785 [pid=13591 tid=13591] ERROR  cufio:465 platform is not supported by cufile
+ 16-07-2025 16:25:34:786 [pid=13591 tid=13591] ERROR  cufio:538 cuFile initialization failed
+ 16-07-2025 16:31:53:614 [pid=16663 tid=16663] ERROR  cufio-mnt:156 unable to load, symbol  mnt_unref_table 
+
+ 16-07-2025 16:31:53:631 [pid=16663 tid=16663] NOTICE  cufio-drv:636 running in compatible mode
+ 16-07-2025 16:31:53:633 [pid=16663 tid=16663] ERROR  cufio-plat:734 Platform does not have any supported GPU!
+ 16-07-2025 16:31:53:634 [pid=16663 tid=16663] ERROR  cufio:465 platform is not supported by cufile
+ 16-07-2025 16:31:53:635 [pid=16663 tid=16663] ERROR  cufio:538 cuFile initialization failed
+ 16-07-2025 16:45:57:459 [pid=21680 tid=21680] ERROR  cufio-mnt:156 unable to load, symbol  mnt_unref_table 
+
+ 16-07-2025 16:45:57:487 [pid=21680 tid=21680] NOTICE  cufio-drv:636 running in compatible mode
+ 16-07-2025 16:45:57:488 [pid=21680 tid=21680] ERROR  cufio-plat:734 Platform does not have any supported GPU!
+ 16-07-2025 16:45:57:489 [pid=21680 tid=21680] ERROR  cufio:465 platform is not supported by cufile
+ 16-07-2025 16:45:57:490 [pid=21680 tid=21680] ERROR  cufio:538 cuFile initialization failed
+ 16-07-2025 16:47:58:510 [pid=22501 tid=22501] ERROR  cufio-mnt:156 unable to load, symbol  mnt_unref_table 
+
+ 16-07-2025 16:47:58:514 [pid=22501 tid=22501] NOTICE  cufio-drv:636 running in compatible mode
+ 16-07-2025 16:47:58:515 [pid=22501 tid=22501] ERROR  cufio-plat:734 Platform does not have any supported GPU!
+ 16-07-2025 16:47:58:516 [pid=22501 tid=22501] ERROR  cufio:465 platform is not supported by cufile
+ 16-07-2025 16:47:58:517 [pid=22501 tid=22501] ERROR  cufio:538 cuFile initialization failed
+ 16-07-2025 16:52:28:337 [pid=24330 tid=24330] ERROR  cufio-mnt:156 unable to load, symbol  mnt_unref_table 
+
+ 16-07-2025 16:52:28:655 [pid=24330 tid=24330] NOTICE  cufio-drv:636 running in compatible mode
+ 16-07-2025 16:52:28:657 [pid=24330 tid=24330] ERROR  cufio-plat:734 Platform does not have any supported GPU!
+ 16-07-2025 16:52:28:658 [pid=24330 tid=24330] ERROR  cufio:465 platform is not supported by cufile
+ 16-07-2025 16:52:28:659 [pid=24330 tid=24330] ERROR  cufio:538 cuFile initialization failed
+ 16-07-2025 16:54:09:821 [pid=25334 tid=25334] ERROR  cufio-mnt:156 unable to load, symbol  mnt_unref_table 
+
+ 16-07-2025 16:54:09:827 [pid=25334 tid=25334] NOTICE  cufio-drv:636 running in compatible mode
+ 16-07-2025 16:54:09:829 [pid=25334 tid=25334] ERROR  cufio-plat:734 Platform does not have any supported GPU!
+ 16-07-2025 16:54:09:830 [pid=25334 tid=25334] ERROR  cufio:465 platform is not supported by cufile
+ 16-07-2025 16:54:09:832 [pid=25334 tid=25334] ERROR  cufio:538 cuFile initialization failed
+ 16-07-2025 17:00:42:506 [pid=28099 tid=28099] ERROR  cufio-mnt:156 unable to load, symbol  mnt_unref_table 
+
+ 16-07-2025 17:00:42:518 [pid=28099 tid=28099] NOTICE  cufio-drv:636 running in compatible mode
+ 16-07-2025 17:00:42:521 [pid=28099 tid=28099] ERROR  cufio-plat:734 Platform does not have any supported GPU!
+ 16-07-2025 17:00:42:522 [pid=28099 tid=28099] ERROR  cufio:465 platform is not supported by cufile
+ 16-07-2025 17:00:42:523 [pid=28099 tid=28099] ERROR  cufio:538 cuFile initialization failed
+ 16-07-2025 17:02:06:728 [pid=28617 tid=28617] ERROR  cufio-mnt:156 unable to load, symbol  mnt_unref_table 
+
+ 16-07-2025 17:02:06:732 [pid=28617 tid=28617] NOTICE  cufio-drv:636 running in compatible mode
+ 16-07-2025 17:02:06:734 [pid=28617 tid=28617] ERROR  cufio-plat:734 Platform does not have any supported GPU!
+ 16-07-2025 17:02:06:735 [pid=28617 tid=28617] ERROR  cufio:465 platform is not supported by cufile
+ 16-07-2025 17:02:06:737 [pid=28617 tid=28617] ERROR  cufio:538 cuFile initialization failed
+ 16-07-2025 17:05:34:979 [pid=30226 tid=30226] ERROR  cufio-mnt:156 unable to load, symbol  mnt_unref_table 
+
+ 16-07-2025 17:05:34:991 [pid=30226 tid=30226] NOTICE  cufio-drv:636 running in compatible mode
+ 16-07-2025 17:05:34:993 [pid=30226 tid=30226] ERROR  cufio-plat:734 Platform does not have any supported GPU!
+ 16-07-2025 17:05:34:994 [pid=30226 tid=30226] ERROR  cufio:465 platform is not supported by cufile
+ 16-07-2025 17:05:34:995 [pid=30226 tid=30226] ERROR  cufio:538 cuFile initialization failed
+ 17-07-2025 13:32:32:782 [pid=12768 tid=12768] ERROR  cufio-mnt:156 unable to load, symbol  mnt_unref_table 
+
+ 17-07-2025 13:32:32:789 [pid=12768 tid=12768] NOTICE  cufio-drv:636 running in compatible mode
+ 17-07-2025 13:32:32:792 [pid=12768 tid=12768] ERROR  cufio-plat:734 Platform does not have any supported GPU!
+ 17-07-2025 13:32:32:793 [pid=12768 tid=12768] ERROR  cufio:465 platform is not supported by cufile
+ 17-07-2025 13:32:32:794 [pid=12768 tid=12768] ERROR  cufio:538 cuFile initialization failed

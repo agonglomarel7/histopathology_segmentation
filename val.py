@@ -45,7 +45,7 @@ def main():
 
     '''load pretrained model'''
     assert args.weights != 0
-    print(f'=> resuming from {args.weights}')
+    print('=> resuming from {}'.format(args.weights))
     assert os.path.exists(args.weights)
     checkpoint_file = os.path.join(args.weights)
     assert os.path.exists(checkpoint_file)
@@ -92,10 +92,11 @@ def main():
 
         if args.dataset != 'REFUGE':
             tol, (eiou, edice) = function.validation_sam(args, nice_test_loader, start_epoch, net)
-            logger.info(f'Total score: {tol}, IOU: {eiou}, DICE: {edice} || @ epoch {start_epoch}.')
+            logger.info('Total score: {}, IOU: {}, DICE: {} || @ epoch {}.'.format(tol, eiou, edice, start_epoch))
+
         else:
             tol, (eiou_cup, eiou_disc, edice_cup, edice_disc) = function.validation_sam(args, nice_test_loader, start_epoch, net)
-            logger.info(f'Total score: {tol}, IOU_CUP: {eiou_cup}, IOU_DISC: {eiou_disc}, DICE_CUP: {edice_cup}, DICE_DISC: {edice_disc} || @ epoch {start_epoch}.')
+            logger.info('Total score: {}, IOU_CUP: {}, IOU_DISC: {}, DICE_CUP: {}, DICE_DISC: {} || @ epoch {}.'.format(tol, eiou_cup, eiou_disc, edice_cup, edice_disc, start_epoch))
 
 
 if __name__ == '__main__':

@@ -38,7 +38,7 @@ from utils import *
 def main():
 
     args = cfg.parse_args()
-
+    print(f"GPU mode enabled: {args.gpu}")
     seed = args.seed
     set_seed(seed)
 
